@@ -1,0 +1,9 @@
+﻿@model ReverseCustoms.Models.ViewModels.Cart.CartVM
+
+@if (User.IsInRole("User")) { 
+<div class="ajaxcart">
+    Корзина: @Model.Quantity шт. - @Model.Price ₽
+    <br />
+    @Html.ActionLink("Просмотреть", "Index")
+</div>
+}

@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Reverse Customs Laser</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <script src="~/Scripts/bootstrap.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">RC LASER</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    @Html.Action("PagesMenuPartial", "Pages")
+
+                    @if (Request.IsAuthenticated)
+                    {
+                        <li> @Html.ActionLink("Выйти", "Logout", "Account", null, new { @class = "navbar-text", style = "text-decoration: none" }) </li>
+                    }
+                    else
+                    {
+                        if (ViewBag.Title == "Login")
+                        {
+                            <li class="navbar-text"> @Html.ActionLink("Войти", "Login", "Account", null, new { @class = "active", style = "text-decoration: none" }) </li>
+                        }
+                        else
+                        {
+                            <li> @Html.ActionLink("Войти", "Login", "Account", null, new { @class = "navbar-text", style = "text-decoration: none" }) </li>
+                        }
+                    }
+
+                    @if (Request.IsAuthenticated && User.IsInRole("User"))
+                    {
+                        if (ViewBag.Title == "User Profile")
+                        {
+                            <li class="active"> @Html.Action("UserNavPartial", "Account", new { area = "" }) </li>
+                        }
+                        else
+                        {
+                            <li> @Html.Action("UserNavPartial", "Account", new { area = "" }) </li>
+                        }
+
+                    }
+                </ul>
+
+                @if (Request.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("ContentManager")))
+                {
+                    if (User.IsInRole("Admin"))
+                    {
+                        <span class="navbar-text">
+                            @Html.ActionLink("Административная панель", "Index", "Dashboard", new { area = "Admin" }, null)
+                        </span>
+                    }
+                    if (User.IsInRole("Manager"))
+                    {
+                        <span class="navbar-text">
+                            @Html.ActionLink("Управление заказами", "Index", "Dashboard", new { area = "Admin" }, null)
+                        </span>
+                    }
+                    if (User.IsInRole("ContentManager"))
+                    {
+                        <span class="navbar-text">
+                            @Html.ActionLink("Режим редактирования", "Index", "Dashboard", new { area = "Admin" }, null)
+                        </span>
+                    }
+
+                }
+                else
+                {
+                    if (ViewBag.Title != "Корзина")
+                    {
+                        <span class="navbar-text">
+                            @Html.Action("CartPartial", "Cart")
+                        </span>
+                    }
+                }
+
+            </div>
+        </div>
+    </nav>
+
+    <div class="container body-content" style="margin-top: 35px;">
+        <div class="row">
+            <div class="col-sm-12 col-md-3 list-group">
+                @Html.Action("CategoryMenuPartial", "Shop")
+            </div>
+
+            @if (ViewBag.Sidebar == "Yes")
+            {
+                <div class="col">
+                    @RenderBody()
+                </div>
+
+                <div class="col-sm-12 col-md-3">
+                    @Html.Action("SidebarPartial", "Pages")
+                </div>
+            }
+            else
+            {
+                <div class="col">
+                    @RenderBody()
+                </div>
+
+            }
+
+
+        </div>
+
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Reverse Customs Shop</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/scripts")
+    <!--Scripts.Render("~/bundles/bootstrap")-->
+    @RenderSection("scripts", required: false)
+</body>
+</html>
